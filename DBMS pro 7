@@ -1,0 +1,58 @@
+7) Table: employees
+
+(i) Find employee detail whose id matches in a subquery:
+
+
+mysql> select emp_name,city,income from employees
+    -> 
+    -> ;
++-----------+------------+---------+
+| emp_name  | city       | income  |
++-----------+------------+---------+
+| Peter     | New York   | 20000   |
+| Mark      | California | 30000   |
+| Donald    | Arizona    | 1000000 |
+| Obama     | Florida    | 5000000 |
+| Linklon   | Georgia    | 25000   |
+| Kane      | Alaska     | 450000  |
+| Adam      | California | 5000000 |
+| Macculam  | Florida    | 350000  |
+| Brayan    | Alaska     | 400000  |
+| Stephan   | Arizona    | 101     |
+| Alaxander | California | 70000   |
++-----------+------------+---------+
+11 rows in set (0.00 sec)
+
+
+
+
+(ii)
+Find employee detail whose income is more than 350000 with the help of
+subquery
+
+
+mysql> select * from employees where emp_id in (select emp_id from employees where income > 350000);
++--------+----------+---------+------------+---------+
+| emp_id | emp_name | emp_age | city       | income  |
++--------+----------+---------+------------+---------+
+|    103 | Donald   | 40      | Arizona    | 1000000 |
+|    104 | Obama    | 35      | Florida    | 5000000 |
+|    106 | Kane     | 35      | Alaska     | 450000  |
+|    107 | Adam     | 40      | California | 5000000 |
+|    109 | Brayan   | 32      | Alaska     | 400000  |
++--------+----------+---------+------------+---------+
+5 rows in set (0.00 sec)
+
+
+
+(iii)
+Find employee details with maximum income using a subquery.
+
+
+mysql> select emp_name,city,income from employees where income=(select max(income)from employees);
++-----------+------------+--------+
+| emp_name  | city       | income |
++-----------+------------+--------+
+| Alaxander | California | 70000  |
++-----------+------------+--------+
+1 row in set (0.00 sec)

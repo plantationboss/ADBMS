@@ -1,0 +1,153 @@
+8)
+Sailors(sid: integer, sname: string, rating: integer, age: real);
+Boats(bid: integer, bname: string, color: string);
+Reserves(sid: integer, bid: integer, day: date).
+
+
+Sailors table
+
+ create table sailors (sid integer primary key,sname varchar(50),rating integer,age real );
+Query OK, 0 rows affected (0.11 sec)
+
+boats 
+
+ create table boats (bid integer primary key,bname varchar(50),color varchar(50));
+Query OK, 0 rows affected (0.09 sec)
+
+reserves 
+
+create table reserves (sid integer,bid integer,day date,foreign key(sid)
+references sailors(sid),foreign key(bid) references boats(bid));
+Query OK, 0 rows affected (0.15 sec)
+
+
+
+a) Count the number of distinct boat colors:
+
+
+ysql> select count(distinct color)from boats;
++-----------------------+
+| count(distinct color) |
++-----------------------+
+|                     3 |
++-----------------------+
+1 row in set (0.00 sec)
+
+
+
+b) Find all information of sailors who have reserved boat number 101.
+
+
+mysql> select * from sailors where sid in(select sid from reserves where bid=101);
++-----+---------+--------+------+
+| sid | sname   | rating | age  |
++-----+---------+--------+------+
+|  22 | Dustin  |      7 |   45 |
+|  64 | Horatio |      7 |   35 |
++-----+---------+--------+------+
+2 rows in set (0.00 sec)
+
+
+
+
+
+c) Find names of sailors who have reserved at least one boat.
+
+
+
+mysql> select sname from sailors s,reserves r where s.sid=r.sid;
++---------+
+| sname   |
++---------+
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Dustin  |
+| Lubber  |
+| Lubber  |
+| Lubber  |
+| Horatio |
+| Horatio |
+| Horatia |
++---------+
+10 rows in set (0.00 sec)
+
+
+d) Find names of sailors who have reserved a red boat and list in the order of
+their age.
+
+mysql> select sname,age from sailors where sid in (select sid from reserves,boats where reserves.bid=boats.bid and color='red')order by age;
++---------+------+
+| sname   | age  |
++---------+------+
+| Horatio |   35 |
+| Dustin  |   45 |
+| Lubber  |   55 |
++---------+------+
+3 rows in set (0.00 sec)
+
+
+e) Display boat names and the names of sailors who have sailed on them:
+
+
+mysql> select b.bname,sname from boats b inner join reserves r on b.bid=r.bid inne
++-----------+---------+
+| bname     | sname   |
++-----------+---------+
+| Interlake | Dustin  |
+| Interlake | Horatio |
+| Interlake | Dustin  |
+| Interlake | Lubber  |
+| Interlake | Horatio |
+| Clipper   | Dustin  |
+| Clipper   | Lubber  |
+| Clipper   | Horatia |
+| Marine    | Dustin  |
+| Marine    | Lubber  |
++-----------+---------+
+10 rows in set (0.00 sec)
+
+
+
+f) Find the ids and names of sailors who have reserved two different boats on the
+same day.
+
+
+mysql> select distinct s.sid,s.sname from sailors s,reserves r1,reserves r2 wher
+e s.sid=r1.sid and r1.day=r2.day and r1.bid<>r2.bid;
++-----+---------+
+| sid | sname   |
++-----+---------+
+|  22 | Dustin  |
+|  64 | Horatio |
+|  74 | Horatia |
++-----+---------+
+3 rows in set (0.00 sec)
+
+
+g) Find the ids of sailors who have reserved a red boat or a green boat.
+
+
+mysql> select r.sid from boats b,reserves r where r.bid=b.bid and b.color='Red' union select r2.sid from boats b2,reserves r2 where r2.bid=b2.bid and b2.color='green';
++------+
+| sid  |
++------+
+|   22 |
+|   31 |
+|   64 |
+|   74 |
++------+
+4 rows in set (0.01 sec)
+
+
+h) Find the names of sailors who have reserved all boats.
+
+
+mysql> select s.sname from sailors s where not exists(select b.bid from boats b
+where not exists(select r.bid from reserves r where r.bid=b.bid and r.sid=s.sid));
++--------+
+| sname  |
++--------+
+| Dustin |
++--------+
+1 row in set (0.00 sec)
