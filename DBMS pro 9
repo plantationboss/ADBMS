@@ -106,7 +106,8 @@ mysql> call factorial(6);
 +---------------+
 1 row in set (0.00 sec)
 
-Query OK, 0 rows affected (0.00 sec)5 Write a PL/SQL procedure to find maximum of three values.ysql> delimiter //
+Query OK, 0 rows affected (0.00 sec)5 Write a PL/SQL procedure to find maximum of three values.
+mysql> delimiter //
 mysql> create procedure find_max_of_three(in val1 int,in val2 int,val3 int)
     -> begin
     -> declare max_val int;
