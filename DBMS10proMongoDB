@@ -1,0 +1,149 @@
+4 USAGE OF AGGREGATE FUNCTIONS
+
+use students
+switched to db students
+
+> db.students.insert({name:"Tony",age:17,id:1,sec:"A",subject:["physics","maths"]})
+WriteResult({ "nInserted" : 1 })
+> db.students.insert({name:"Stark",age:19,id:2,sec:"B",subject:["Chemistry","maths"]})
+WriteResult({ "nInserted" : 1 })
+> db.students.insert({name:"Akshay",age:20,id:3,sec:"A",subject:["Physics","maths"]})
+WriteResult({ "nInserted" : 1 })
+> db.students.insert({name:"Ajay",age:19,id:4,sec:"A",subject:["Physics","maths"]})
+WriteResult({ "nInserted" : 1 })
+> db.students.insert({name:"Arjun",age:19,id:5,sec:"B",subject:["Computer Science","maths"]})
+WriteResult({ "nInserted" : 1 })
+> db.students.insert({name:"Sarath",age:22,id:5,sec:"A",subject:["Chemistry","Physics"]})
+WriteResult({ "nInserted" : 1 })
+
+
+> db.students.find().pretty()
+{
+	"_id" : ObjectId("67f5ff485d3747b5877b410d"),
+	"name" : "Tony",
+	"age" : 17,
+	"id" : 1,
+	"sec" : "A",
+	"subject" : [
+		"physics",
+		"maths"
+	]
+}
+{
+	"_id" : ObjectId("67f5ff7d5d3747b5877b410e"),
+	"name" : "Stark",
+	"age" : 19,
+	"id" : 2,
+	"sec" : "B",
+	"subject" : [
+		"Chemistry",
+		"maths"
+	]
+}
+{
+	"_id" : ObjectId("67f5fff55d3747b5877b410f"),
+	"name" : "Akshay",
+	"age" : 20,
+	"id" : 3,
+	"sec" : "A",
+	"subject" : [
+		"Physics",
+		"maths"
+	]
+}
+{
+	"_id" : ObjectId("67f600165d3747b5877b4110"),
+	"name" : "Ajay",
+	"age" : 19,
+	"id" : 4,
+	"sec" : "A",
+	"subject" : [
+		"Physics",
+		"maths"
+	]
+}
+{
+	"_id" : ObjectId("67f6003e5d3747b5877b4111"),
+	"name" : "Arjun",
+	"age" : 19,
+	"id" : 5,
+	"sec" : "B",
+	"subject" : [
+		"Computer Science",
+		"maths"
+	]
+}
+{
+	"_id" : ObjectId("67f600735d3747b5877b4112"),
+	"name" : "Sarath",
+	"age" : 22,
+	"id" : 5,
+	"sec" : "A",
+	"subject" : [
+		"Chemistry",
+		"Physics"
+	]
+}
+> 
+
+
+ Displaying the total number of students in one section only
+
+> db.students.aggregate([{$match:{sec:"B"}},{$count:"Total student in sec:B"}])
+{ "Total student in sec:B" : 2 }
+
+ Displaying the total number of students in both the sections and maximum age
+from both section
+
+> db.students.aggregate([{$group: {_id:"$sec",total_st: {$sum:1},max_age:{$max:"$age"}}}])
+{ "_id" : "B", "total_st" : 2, "max_age" : 19 }
+{ "_id" : "A", "total_st" : 4, "max_age" : 22 }
+
+
+ Displaying details of students whose age is greater than 20 using match stage
+
+> db.students.aggregate([{$match:{age:{$gt:20}}}]).pretty()
+{
+	"_id" : ObjectId("67f600735d3747b5877b4112"),
+	"name" : "Sarath",
+	"age" : 22,
+	"id" : 5,
+	"sec" : "A",
+	"subject" : [
+		"Chemistry",
+		"Physics"
+	]
+}
+
+
+ Sorting the students on the basis of age
+
+> db.students.aggregate([{$sort:{'age':1}}])
+{ "_id" : ObjectId("67f5ff485d3747b5877b410d"), "name" : "Tony", "age" : 17, "id" : 1, "sec" : "A", "subject" : [ "physics", "maths" ] }
+{ "_id" : ObjectId("67f5ff7d5d3747b5877b410e"), "name" : "Stark", "age" : 19, "id" : 2, "sec" : "B", "subject" : [ "Chemistry", "maths" ] }
+{ "_id" : ObjectId("67f600165d3747b5877b4110"), "name" : "Ajay", "age" : 19, "id" : 4, "sec" : "A", "subject" : [ "Physics", "maths" ] }
+{ "_id" : ObjectId("67f6003e5d3747b5877b4111"), "name" : "Arjun", "age" : 19, "id" : 5, "sec" : "B", "subject" : [ "Computer Science", "maths" ] }
+{ "_id" : ObjectId("67f5fff55d3747b5877b410f"), "name" : "Akshay", "age" : 20, "id" : 3, "sec" : "A", "subject" : [ "Physics", "maths" ] }
+{ "_id" : ObjectId("67f600735d3747b5877b4112"), "name" : "Sarath", "age" : 22, "id" : 5, "sec" : "A", "subject" : [ "Chemistry", "Physics" ] }
+
+
+ Counting the total numbers of documents
+
+> db.students.count()
+6
+ 
+ 
+ Displaying distinct names and ages (non-repeating)
+
+> db.students.distinct("name")
+[ "Ajay", "Akshay", "Arjun", "Sarath", "Stark", "Tony" ]
+
+> db.students.distinct("age")
+[ 17, 19, 20, 22 ]
+
+➡️ 5 CREATE USERS AND ROLES IN THE EMPLOYEE DATABASE
+
+
+
+
+
